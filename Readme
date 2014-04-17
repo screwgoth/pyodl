@@ -8,9 +8,9 @@ pip install requests
 pip install tabulate
 
 3. Usage
-test-API.py is a sample of how to use this software.
+test_api.py is a sample of how to use this software.
 Use it as follows :
-./test-API.py -u <username> -p <password> -d <OpenDaylight Server URL> -P <port number> -s <Secure port number>
+./test_api.py [-u <username>] [-p <password>] [-d <OpenDaylight Server URL>] [-P <port number>] [-s <Secure port number>]
 
 4. Bugs and Problems
 This software still needs much test.
