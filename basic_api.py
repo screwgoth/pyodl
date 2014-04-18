@@ -1,6 +1,5 @@
 """
 """
-from RequestData import *
 
 
 class BasicAPI(object):

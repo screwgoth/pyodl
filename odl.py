@@ -1,10 +1,9 @@
 """
-OpenDaylight Python Northband API
+OpenDaylight Python Northband api
 author: Pengfei Tuan
 email: pengfeituan at gamil dot com
 school: Graduate School at Shenzhen, Tsinghua Univ.
 """
-from requests.auth import *
 
 
 class ODL(object):

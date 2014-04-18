@@ -1,7 +1,7 @@
 """
 """
-from BasicAPI import *
-from RequestData import *
+from basic_api import BasicAPI
+from request_data import RequestData
 
 
 class BridgeDomainAPI(BasicAPI):

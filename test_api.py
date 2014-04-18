@@ -1,18 +1,21 @@
 #!/usr/bin/python
 """
 """
-import sys
-import getopt
-import os
-import pprint
-from API import *
-import time
-from unittest.test import test_break
-from tabulate import tabulate
-
 """
 Globals
 """
+
+import getopt
+import sys
+import time
+
+from requests.auth import HTTPBasicAuth
+from tabulate import tabulate
+
+from api import API
+from odl import ODL
+
+
 user = 'admin'
 password = 'admin'
 domain = 'localhost'
@@ -59,15 +62,15 @@ def fill_report(statusCode, individualTest):
         individualTest.append("Unknown Error")
 
 
-def prepareReport(statusCode, reportList, individualTest):
+def prepare_report(statusCode, reportList, individualTest):
     fill_report(statusCode, individualTest)
     reportList.append(individualTest)
     print tabulate(reportList, headers, tablefmt="grid")
 
 
-def test_Topology_all(api, reportList):
+def test_topology_all(api, reportList):
     """
-    test TopologyAPI
+    test topology_api
     """
     """
     Retrieve Topology
@@ -75,15 +78,15 @@ def test_Topology_all(api, reportList):
     individualTest = []
     individualTest.append("Retreive Topology")
     response = api.retrieve_the_topology()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     """
     Retrieve UserLinks
     """
     individualTest = []
-    response = api.retrieve_userLinks()
+    response = api.retrieve_user_links()
     individualTest.append("Retrieve UserLinks")
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     """
     Add User Link
@@ -98,10 +101,10 @@ def test_Topology_all(api, reportList):
         'srcNodeConnector': 'OF|2@OF|00:00:00:00:00:00:00:01',
         'dstNodeConnector': 'OF|2@OF|00:00:00:00:00:00:00:03'
     }
-    response = api.add_userLink(topologyUserLinkConfig=link1)
-    prepareReport(response.status_code, reportList, individualTest)
+    response = api.add_user_link(topologyUserLinkConfig=link1)
+    prepare_report(response.status_code, reportList, individualTest)
     time.sleep(1)
-#     response = api.retrieve_userLinks()
+#     response = api.retrieve_user_links()
 #     time.sleep(1)
 
     """
@@ -110,29 +113,29 @@ def test_Topology_all(api, reportList):
     print('deleting link link1')
     individualTest = []
     individualTest.append("Delete User Link")
-    response = api.del_userLink(linkName='link1')
-    prepareReport(response.status_code, reportList, individualTest)
+    response = api.del_user_link(linkName='link1')
+    prepare_report(response.status_code, reportList, individualTest)
 
 
-def test_FlowProgrammer_all(api, reportList):
+def test_flow_programmer_all(api, reportList):
     """
-    test FlowProgrammerAPI
+    test flow_programmer_api
     """
     individualTest = []
     individualTest.append("Retrieve Flows")
     response = api.retrieve_flows()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Retrieve Node Flow by ID")
     response = api.retrieve_node_flows(nodeId='00:00:00:00:00:00:00:01')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Retrieve Flow by Name and ID")
     response = api.retrieve_flow_by_name(nodeId='00:00:00:00:00:00:00:01',
                                          flowName='NORMAL')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Add a Flow")
@@ -151,7 +154,7 @@ def test_FlowProgrammer_all(api, reportList):
         ]
     }
     response = api.add_or_modify_flow(flowConfig=flow1)
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     time.sleep(1)
     api.retrieve_node_flows(nodeId='00:00:00:00:00:00:00:01')
@@ -161,7 +164,7 @@ def test_FlowProgrammer_all(api, reportList):
     #print('toggle a flow')
     response = api.toggle_flow_by_name(nodeId='00:00:00:00:00:00:00:01',
                                        flowName='flow1', nodeType='OF')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     time.sleep(1)
 
@@ -169,30 +172,30 @@ def test_FlowProgrammer_all(api, reportList):
     individualTest.append("Delete a Flow")
     response = api.del_flow_by_name(nodeId='00:00:00:00:00:00:00:01',
                                     flowName='flow1', nodeType='OF')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     response = api.retrieve_node_flows(nodeId='00:00:00:00:00:00:00:01')
 
 
-def test_HostTracker_all(api, reportList):
+def test_host_tracker_all(api, reportList):
     """
-    test HostTrackerAPI
+    test host_tracker_api
     """
-    #print('HostTrackerAPI')
+    #print('host_tracker_api')
     individualTest = []
     individualTest.append("Retrieve all Active Hosts")
     response = api.retrieve_active_hosts()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Retrieve all Inactive Hosts")
     response = api.retrieve_inactive_hosts()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Retrieve Host by IP Address")
     response = api.retrieve_host_by_address(networkAddress='10.0.0.1')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     #hostConfig
     host1 = {
@@ -208,23 +211,23 @@ def test_HostTracker_all(api, reportList):
     individualTest = []
     individualTest.append("Add a Host")
     response = api.add_host(hostConfig=host1)
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
     time.sleep(3)
 
     individualTest = []
     individualTest.append("Delete a Host by IP Address")
     response = api.del_host(networkAddress='10.0.1.1')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
 
-def test_StaticRoute_all(api, reportList):
+def test_static_route_all(api, reportList):
     """
-    test StaticRouteAPI
+    test static_route_api
     """
     individualTest = []
     individualTest.append("Retrieve all Static Routes")
     response = api.retrieve_all_static_routes()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     route1 = {
         'name': 'route1',
@@ -235,89 +238,89 @@ def test_StaticRoute_all(api, reportList):
     individualTest = []
     individualTest.append("Retrieve Static Route by Name")
     response = api.retrieve_static_route_by_name(route='test-route1')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     print('add route1')
     individualTest = []
     individualTest.append("Add Static Route")
     response = api.add_static_route(staticRoute=route1)
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
     time.sleep(1)
 
     individualTest = []
     individualTest.append("Delete Static Route")
     response = api.del_static_route(route='route1')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
 
-def test_Statistics_all(api, reportList):
+def test_statistics_all(api, reportList):
     """
-    test StatisticsAPI
+    test statistics_api
     """
     individualTest = []
     individualTest.append("Retrieve All Statistics")
     response = api.retrieve_all_statistics_flow()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Retrieve all Statisics Ports")
     response = api.retrieve_all_statistics_port()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Retrieve all Statistics Tables")
     response = api.retrieve_all_statistics_table()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
 
-def test_Subnets_all(api, reportList):
+def test_subnets_all(api, reportList):
     """
-    test SubnetsAPI Not Tested Now!!!
+    test subnets_api Not Tested Now!!!
     """
     individualTest = []
     individualTest.append("Retrieve all Subnets")
     response = api.retrieve_all_subnets()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
 
-def test_SwitchManager_all(api, reportList):
+def test_switch_manager_all(api, reportList):
     """
-    test SwitchManagerAPI
+    test switch_manager_api
     """
     individualTest = []
     individualTest.append("Retrieve all Nodes")
     response = api.retrieve_all_nodes()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Save Node Configuration")
     response = api.save_nodes_config()  # save failed ???
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Retrieve Node Connectors by NodeID")
     response = api.retrieve_node_connectors_by_node(nodeId=
                                                     '00:00:00:00:00:00:00:01')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Add Node Property")
     response = api.add_node_property(nodeId='00:00:00:00:00:00:00:01',
                                      propertyName='description',
                                      propertyValue='switch1')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
     time.sleep(1)
 
     individualTest = []
     individualTest.append("Delete Node Property")
     response = api.del_node_property(nodeId='00:00:00:00:00:00:00:01',
                                      propertyName='description')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
 
-def test_UserManager_all(api, reportList):
+def test_user_manager_all(api, reportList):
     """
-    test UserManagerAPI
+    test user_manager_api
     """
     """
     userConfig1 = {
@@ -333,33 +336,33 @@ def test_UserManager_all(api, reportList):
     """
 
 
-def test_ContainerManager_all(api, reportList):
+def test_container_manager_all(api, reportList):
     """
-    ContainerManager API
+    ContainerManager api
     """
     individualTest = []
     individualTest.append("Retrieve all Containers")
     response = api.retrieve_all_containers()
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
     individualTest = []
     individualTest.append("Retrieve Controller Configuration")
     response = api.retrieve_container_config()  # can't get 'default'
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
 
-def test_ConnectionManager_all(api, reportList):
+def test_connection_manager_all(api, reportList):
     """
-    ConnectionManager API
+    ConnectionManager api
     """
     individualTest = []
     individualTest.append("Retrieve all Controller Nodes")
     response = api.retrieve_all_nodes_of_controller('127.0.0.1')
-    prepareReport(response.status_code, reportList, individualTest)
+    prepare_report(response.status_code, reportList, individualTest)
 
 
 def usage():
-    print 'test-API.py [-h] [-u <username>] [-p <password>] [-d <domain>] \
+    print 'test-api.py [-h] [-u <username>] [-p <password>] [-d <domain>] \
     [-P <port>] [-s <secure_port>]'
 
 
@@ -402,16 +405,16 @@ def main(argv):
                 domain=domain, port=port, sec_port=sport)
     api = API(odl=myodl, format='json')
     reportList = []
-    test_Topology_all(api, reportList)
-    test_FlowProgrammer_all(api, reportList)
-    test_HostTracker_all(api, reportList)
-    test_StaticRoute_all(api, reportList)
-    test_Statistics_all(api, reportList)
-    test_ConnectionManager_all(api, reportList)
-    test_ContainerManager_all(api, reportList)
-    test_SwitchManager_all(api, reportList)
-    test_Subnets_all(api, reportList)
-    test_UserManager_all(api, reportList)
+    test_topology_all(api, reportList)
+    test_flow_programmer_all(api, reportList)
+    test_host_tracker_all(api, reportList)
+    test_static_route_all(api, reportList)
+    test_statistics_all(api, reportList)
+    test_connection_manager_all(api, reportList)
+    test_container_manager_all(api, reportList)
+    test_switch_manager_all(api, reportList)
+    test_subnets_all(api, reportList)
+    test_user_manager_all(api, reportList)
     print tabulate(reportList, headers, tablefmt="grid")
     print 'Completed Testing'
 

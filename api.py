@@ -1,18 +1,18 @@
 """
 """
-from ODL import *
-from TopologyAPI import *
-from FlowProgrammerAPI import *
-from HostTrackerAPI import *
-from StaticRouteAPI import *
-from StatisticsAPI import *
-from SubnetsAPI import *
-from SwitchManagerAPI import *
-from UserManagerAPI import *
-from ContainerManagerAPI import *
-from ConnectionManagerAPI import *
-from BridgeDomainAPI import *
 import requests
+
+from bridge_domain_api import BridgeDomainAPI
+from connection_manager_api import ConnectionManagerAPI
+from container_manager_api import ContainerManagerAPI
+from flow_programmer_api import FlowProgrammerAPI
+from host_tracker_api import HostTrackerAPI
+from static_route_api import StaticRouteAPI
+from statistics_api import StatisticsAPI
+from subnets_api import SubnetsAPI
+from switch_manager_api import SwitchManagerAPI
+from topology_api import TopologyAPI
+from user_manager_api import UserManagerAPI
 
 
 class API(object):
@@ -58,7 +58,7 @@ class API(object):
         self.response = self.method(
             self.full_uri, auth=self.odl.auth, data=request_data.data, headers=request_data.headers)
         print('req uri: {2} \n headers: {3}\n method: {4} \n body: {5}\n{0}\n{1}'.format(
-            self.response.status_code, self.response.text, self.full_uri, request_data.headers,request_data.method,request_data.data))
+            self.response.status_code, self.response.text, self.full_uri, request_data.headers, request_data.method, request_data.data))
         return self.response
 
     def __request_top(self, request_data_func, **func_kwargs):
@@ -78,14 +78,14 @@ class API(object):
         """
         return self.__request_top(request_data_func=self.topology.retrieve_the_topology, container=container)
 
-    def retrieve_userLinks(self, container=None):
-        return self.__request_top(request_data_func=self.topology.retrieve_userLinks, container=container)
+    def retrieve_user_links(self, container=None):
+        return self.__request_top(request_data_func=self.topology.retrieve_user_links, container=container)
 
-    def add_userLink(self, topologyUserLinkConfig, container=None):
-        return self.__request_top(request_data_func=self.topology.add_userLink, container=container, topologyUserLinkConfig=topologyUserLinkConfig)
+    def add_user_link(self, topologyUserLinkConfig, container=None):
+        return self.__request_top(request_data_func=self.topology.add_user_link, container=container, topologyUserLinkConfig=topologyUserLinkConfig)
 
-    def del_userLink(self, linkName, container=None):
-        return self.__request_top(request_data_func=self.topology.del_userLink, container=container, linkName=linkName)
+    def del_user_link(self, linkName, container=None):
+        return self.__request_top(request_data_func=self.topology.del_user_link, container=container, linkName=linkName)
 
     """
     FlowProgrammer API

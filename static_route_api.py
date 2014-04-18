@@ -1,40 +1,39 @@
 """
 """
-from RequestData import *
-from BasicAPI import *
+from basic_api import BasicAPI
+from request_data import RequestData
 
 
-class TopologyAPI(BasicAPI):
+class StaticRouteAPI(BasicAPI):
 
     def __init__(self, format):
-        BasicAPI.__init__(self, format, app='topology')
+        BasicAPI.__init__(self, format, app='staticroute')
 
-    def retrieve_the_topology(self, container):
-        self.uri = '/' + self.app + '/' + container
+    def retrieve_all_static_routes(self, container):
+        self.uri = '/' + self.app + '/' + container + '/routes'
         self.method = 'GET'
         self.data = None
         self.headers = {'Accept': 'application/' + self.format}
         return RequestData(uri=self.uri, method=self.method, data=self.data, headers=self.headers)
 
-    def retrieve_userLinks(self, container):
-        self.uri = '/' + self.app + '/' + container + '/userLinks'
+    def retrieve_static_route_by_name(self, route, container):
+        self.uri = '/' + self.app + '/' + container + '/route/' + route
         self.method = 'GET'
         self.data = None
         self.headers = {'Accept': 'application/' + self.format}
         return RequestData(uri=self.uri, method=self.method, data=self.data, headers=self.headers)
 
-    def add_userLink(self, container, topologyUserLinkConfig):
-        self.uri = '/' + self.app + '/' + container + \
-            '/userLink/' + topologyUserLinkConfig['name']
+    def add_static_route(self, staticRoute, container):
+        self.uri = '/' + self.app + '/' + container + '/route/' + staticRoute['name']
         self.method = 'PUT'
-        self.data = topologyUserLinkConfig
+        self.data = staticRoute
         self.headers = {'Accept': 'application/' + self.format,
-        'Content-type' : 'application/' +self.format
+        'Content-type' : 'application/' + self.format
         }
         return RequestData(uri=self.uri, method=self.method, data=self.data, headers=self.headers)
 
-    def del_userLink(self, container, linkName):
-        self.uri = '/' + self.app + '/' + container + '/userLink/' + linkName
+    def del_static_route(self, route, container):
+        self.uri = '/' + self.app + '/' + container + '/route/' + route
         self.method = 'DELETE'
         self.data = None
         self.headers = {'Accept': 'application/' + self.format}
