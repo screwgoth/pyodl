@@ -16,15 +16,19 @@ Use it as follows :
 This software still needs much test.
 
 5. To Do
-- Make the compliant with PEP8 coding guidelines
+- Make the code compliant with PEP8 coding guidelines
 - Restructuring the code : Pythonize it :)
-- High-level APIs based on REST APIs is under developing.
+- Need to create API versions, so that when OpenDaylight moves from v2, v3 the migration is smooth
+- High-level APIs based on REST APIs is under development : Need to add support of all the APIs
 - OpenStack's OpenDaylight management will be added soon.
 
 6. License
 This software is under GPLv2. Read License for details.
 
 7. Contacts
-If you have any questions, please feel free to send me an email.
+Please not that Mr.Pengfei Tuan, the original author, does not actively maintain this project.
+If you have any questions, please feel free to send an email to :
+email: raseel dot bhagat at zymrinc dot com
+email: yogesh at zymrinc dot com
 email: pengfeituan at gmail dot com
 
